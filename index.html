@@ -4,9 +4,7 @@
 <head>
 
 <meta charset="UTF-8">
-
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>PROGUL ANGKASA BERBAKAT</title>
 
@@ -30,7 +28,7 @@ body{
     align-items:center;
     justify-content:center;
     gap:20px;
-    margin-bottom:30px;
+    margin-bottom:25px;
     flex-wrap:wrap;
 }
 
@@ -42,9 +40,42 @@ body{
 }
 
 .title{
-    font-size:45px;
+    font-size:48px;
     font-weight:bold;
-    text-align:center;
+}
+
+.legend{
+    display:flex;
+    justify-content:center;
+    gap:25px;
+    margin-bottom:25px;
+    flex-wrap:wrap;
+    font-size:18px;
+    font-weight:bold;
+}
+
+.legend-item{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.dot{
+    width:18px;
+    height:18px;
+    border-radius:50%;
+}
+
+.dot-green{
+    background:#00b140;
+}
+
+.dot-yellow{
+    background:#ffc107;
+}
+
+.dot-red{
+    background:#e60000;
 }
 
 .container{
@@ -60,7 +91,7 @@ body{
 }
 
 .area{
-    font-size:24px;
+    font-size:22px;
     font-weight:bold;
     margin-bottom:15px;
 }
@@ -73,10 +104,10 @@ body{
 
 .btn{
     min-width:130px;
+    text-align:center;
     padding:14px;
     border-radius:12px;
     text-decoration:none;
-    text-align:center;
     color:white;
     font-size:20px;
     font-weight:bold;
@@ -92,27 +123,31 @@ body{
     background:#00b140;
 }
 
+.kuning{
+    background:#ffc107;
+    color:#000;
+}
+
 .merah{
     background:#e60000;
 }
 
 .loading{
     text-align:center;
-    font-size:22px;
-    margin-top:40px;
+    font-size:24px;
 }
 
 .error{
     text-align:center;
-    font-size:22px;
-    color:#ffaaaa;
-    margin-top:40px;
+    color:#ffb3b3;
+    font-size:24px;
 }
 
 @media(max-width:700px){
 
     .title{
         font-size:28px;
+        text-align:center;
     }
 
     .btn{
@@ -129,12 +164,30 @@ body{
 
 <div class="header">
 
-    <!-- GANTI LOGO -->
     <img class="logo"
          src="ab.jpg">
 
     <div class="title">
         PROGUL ANGKASA BERBAKAT
+    </div>
+
+</div>
+
+<div class="legend">
+
+    <div class="legend-item">
+        <div class="dot dot-green"></div>
+        Lengkap
+    </div>
+
+    <div class="legend-item">
+        <div class="dot dot-yellow"></div>
+        Kurang
+    </div>
+
+    <div class="legend-item">
+        <div class="dot dot-red"></div>
+        Belum Mengirim
     </div>
 
 </div>
@@ -149,16 +202,9 @@ body{
 
 <script>
 
-// ======================================
-// GANTI DENGAN LINK WEB APP
-// ======================================
-
+// GANTI DENGAN URL WEB APP ANDA
 const API_URL =
-"https://script.google.com/macros/s/AKfycbxkuzNpcsynWdDEO3E5glwCfR2Uzh7s3Bd6XpX2oM3V1hIzIdjQmJZ2AFgts3bSrg3e5w/exec?sheet=DATA1";
-
-// ======================================
-// AMBIL DATA
-// ======================================
+"https://script.google.com/macros/s/AKfycbxJ1S6HMkoL-aXMzZjc5j_znbXaNK0v3IGunAIyHUuGIIfzUy4M3NyHiQXZBpBYrHQ7OQ/exec?sheet=DATA1";
 
 fetch(API_URL)
 
@@ -171,26 +217,15 @@ fetch(API_URL)
     console.log(error);
 
     document.getElementById("container").innerHTML =
-
-    `<div class="error">
-        Gagal mengambil data
-     </div>`;
+    '<div class="error">Gagal mengambil data</div>';
 
 });
-
-// ======================================
-// TAMPILKAN DATA
-// ======================================
 
 function tampilkanData(data){
 
     const container = document.getElementById("container");
 
     container.innerHTML = "";
-
-    // ==========================
-    // GROUP BERDASARKAN AREA
-    // ==========================
 
     const grouped = {};
 
@@ -206,37 +241,17 @@ function tampilkanData(data){
 
     });
 
-    // ==========================
-    // LOOP AREA
-    // ==========================
-
     for(const area in grouped){
 
         const card = document.createElement("div");
-
         card.className = "card";
 
-        // ======================
-        // JUDUL AREA
-        // ======================
-
         const title = document.createElement("div");
-
         title.className = "area";
-
         title.innerText = area;
 
-        // ======================
-        // WRAPPER BUTTON
-        // ======================
-
         const buttons = document.createElement("div");
-
         buttons.className = "buttons";
-
-        // ======================
-        // LOOP SEKOLAH
-        // ======================
 
         grouped[area].forEach(sekolah => {
 
@@ -246,38 +261,46 @@ function tampilkanData(data){
 
             a.innerText = sekolah.nama;
 
-            // ==================
-            // JIKA ADA LINK
-            // ==================
+            const link = (sekolah.link || "").trim();
 
-            if(sekolah.link &&
-               sekolah.link !== ""){
+            const ket = (sekolah.keterangan || "")
+                        .trim()
+                        .toUpperCase();
+
+            // MERAH
+            if(link === ""){
+
+                a.classList.add("merah");
+
+                a.href = "#";
+
+            }
+
+            // HIJAU
+            else if(ket === "LENGKAP"){
 
                 a.classList.add("hijau");
 
-                a.href = sekolah.link;
+                a.href = link;
 
                 a.target = "_blank";
 
             }
 
-            // ==================
-            // JIKA TIDAK ADA
-            // ==================
-
+            // KUNING
             else{
 
-                a.classList.add("merah");
+                a.classList.add("kuning");
+
+                a.href = link;
+
+                a.target = "_blank";
 
             }
 
             buttons.appendChild(a);
 
         });
-
-        // ======================
-        // MASUKKAN KE CARD
-        // ======================
 
         card.appendChild(title);
 
